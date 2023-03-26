@@ -11,14 +11,12 @@ services:
       - .env
   mysql:
     image: mysql:8.0
-    platform: ""
     volumes:
       - ./.docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - site-mysql-data:/var/lib/mysql
     env_file:
       - .env
   flyway:
-    platform: ""
     command: -url=jdbc:mysql://mysql/${MYSQL_DB} -user=${MYSQL_USER} -password=${MYSQL_PASSWORD} migrate
     build:
       context: .
