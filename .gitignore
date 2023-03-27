@@ -1,2 +1,3 @@
 .env
+flyway.conf
 bin/
