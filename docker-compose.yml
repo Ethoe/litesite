@@ -18,7 +18,7 @@ services:
       - .env
   flyway:
     platform: ${PLATFORM}
-    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?useSSL=false&allowPublicKeyRetrieval=true migrate
+    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?allowPublicKeyRetrieval=true migrate
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
