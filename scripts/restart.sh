@@ -9,4 +9,4 @@ npm run build
 cd ../../
 
 # Step 3: Run docker-compose
-docker-compose up -d --force-recreate --build
+docker compose up -d --force-recreate --build
