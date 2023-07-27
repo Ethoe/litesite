@@ -22,12 +22,20 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/user/{username}", UserHandler)
-	r.HandleFunc("/", MainHandler)
+	fs := http.FileServer(http.Dir("./web/app/build/static"))
 
-	http.HandleFunc("/", MainHandler)
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+
+	apiRouter := r.PathPrefix("/api").Subrouter()
+	apiRouter.HandleFunc("/", MainHandler)
+	apiRouter.HandleFunc("/user/{username}", UserHandler)
+
+	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./web/app/build/index.html")
+	})
 
 	fmt.Println("Listening on port 5050...")
 
+	http.Handle("/", r)
 	http.ListenAndServe(":5050", r)
 }
