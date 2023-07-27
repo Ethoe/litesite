@@ -1,25 +1,28 @@
 package handlers
 
 import (
-	"database/sql"
+	"encoding/json"
 	"fmt"
+	"net/http"
 
-	_ "github.com/go-sql-driver/mysql"
+	"cmd/server/main.go/internal/db"
+	"cmd/server/main.go/pkg/entities/users"
 )
 
-func AddUser(db *sql.DB, firstname, lastname, email, password string) error {
-	// Prepare the SQL statement
-	stmt, err := db.Prepare("INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)")
+func AddUser(w http.ResponseWriter, r *http.Request) {
+	var user users.User
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		return fmt.Errorf("failed to prepare SQL statement: %v", err)
-	}
-	defer stmt.Close()
-
-	// Execute the statement to insert the new user
-	_, err = stmt.Exec(firstname, lastname, email, password)
-	if err != nil {
-		return fmt.Errorf("failed to insert new user: %v", err)
+		http.Error(w, fmt.Sprintf("failed to decode request body: %v", err), http.StatusBadRequest)
+		return
 	}
 
-	return nil
+	err = users.AddUser(db.Master, user.FirstName, user.LastName, user.Email, user.Password)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to decode request body: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(user)
 }
