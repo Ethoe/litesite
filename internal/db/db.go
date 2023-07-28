@@ -22,12 +22,11 @@ func SetupDB() {
 	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
 	mysqlDB := os.Getenv("MYSQL_DB")
 
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlDB)
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", mysqlUser, mysqlPassword, mysqlHost, mysqlDB)
 
 	db, err := sql.Open("mysql", dbURI)
 	if err != nil {
 		log.Fatalf("Failed to connect to MySQL: %v", err)
 	}
 	Master = db
-	defer Master.Close()
 }

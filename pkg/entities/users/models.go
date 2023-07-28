@@ -10,3 +10,10 @@ type User struct {
 	Password  string    `json:"password"`
 	RegDate   time.Time `json:"regDate"`
 }
+
+type Session struct {
+	ID           int       `json:"id"`
+	UserID       int       `json:"userId"`
+	SessionToken string    `json:"sessionToken"`
+	Creation     time.Time `json:"creation"`
+}

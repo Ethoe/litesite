@@ -1,8 +1,11 @@
 package users
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -34,19 +37,66 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 	return users, nil
 }
 
-func AddUser(db *sql.DB, firstname, lastname, email, password string) error {
+func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, error) {
+	if firstname == "" || email == "" || password == "" {
+		return "", fmt.Errorf("missing required fields")
+	}
+
+	if email != "ryanouttrim@gmail.com" {
+		return "", fmt.Errorf("invalid email address")
+	}
+
 	// Prepare the SQL statement
 	stmt, err := db.Prepare("INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)")
 	if err != nil {
-		return fmt.Errorf("failed to prepare SQL statement: %v", err)
+		return "", fmt.Errorf("failed to prepare SQL statement: %v", err)
 	}
 	defer stmt.Close()
 
 	// Execute the statement to insert the new user
 	_, err = stmt.Exec(firstname, lastname, email, password)
 	if err != nil {
-		return fmt.Errorf("failed to insert new user: %v", err)
+		return "", fmt.Errorf("failed to insert new user: %v", err)
 	}
 
-	return nil
+	token, err := SignInUser(db, email, password)
+	if err != nil {
+		return "", fmt.Errorf("failed to sign in user: %v", err)
+	}
+
+	return token, nil
+}
+
+func SignInUser(db *sql.DB, email, password string) (string, error) {
+	var user User
+	query := "SELECT id, firstname, lastname, email, password, reg_date " +
+		"FROM users WHERE email = ? AND password = ?"
+	err := db.QueryRow(query, email, password).Scan(
+		&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.RegDate,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("invalid email or password")
+		}
+		return "", err
+	}
+
+	token := generateSessionToken()
+	query = "INSERT INTO usersessions (userid, sessiontoken, creation) VALUES (?, ?, NOW())"
+	_, err = db.Exec(query, user.ID, token)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func generateSessionToken() string {
+	// Generate a random session token using crypto/rand and base64 encoding
+	tokenBytes := make([]byte, 32)
+	_, err := rand.Read(tokenBytes)
+	if err != nil {
+		log.Fatal("Failed to generate random bytes:", err)
+	}
+	return base64.URLEncoding.EncodeToString(tokenBytes)
 }

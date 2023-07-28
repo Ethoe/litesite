@@ -8,6 +8,7 @@ import (
 
 	"cmd/server/main.go/internal/core"
 	"cmd/server/main.go/internal/db"
+	"cmd/server/main.go/pkg/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -19,6 +20,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	db.SetupDB()
+	defer db.Master.Close()
 
 	r := mux.NewRouter()
 
@@ -28,12 +30,14 @@ func main() {
 
 	apiRouter := r.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/", MainHandler)
-	apiRouter.HandleFunc("/users/add", core.AddUserHandler).Methods("POST")
+	apiRouter.HandleFunc("/users/create", core.AddUserHandler).Methods("POST")
 	apiRouter.HandleFunc("/users/list/all", core.GetAllUsersHandler).Methods("GET")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./web/app/build/index.html")
 	})
+
+	r.Use(middleware.AuthMiddleware)
 
 	fmt.Println("Listening on port 5050...")
 

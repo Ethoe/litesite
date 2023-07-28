@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS usersessions (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    userid INT(6) UNSIGNED,
+    sessiontoken VARCHAR(50),
+    creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE
+    users
+ADD
+    CONSTRAINT unique_email UNIQUE (email);
