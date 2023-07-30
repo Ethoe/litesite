@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://ethoe.dev/api'; // Replace with the URL of your Golang backend API
+//const baseURL = 'https://ethoe.dev/api'; // Replace with the URL of your Golang backend API
+const baseURL = '%PUBLIC_URL%/api'
 
 const apiClient = axios.create({
     baseURL,
