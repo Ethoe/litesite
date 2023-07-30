@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import apiClient from "./../../services/apiClient"
+import apiClient from './../../services/apiClient';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -28,7 +29,8 @@ function Login() {
         event.preventDefault();
 
         // Send login request to the backend
-        apiClient.post('/login', { email, password })
+        apiClient
+            .post('/login', { email, password })
             .then((response) => response.json())
             .then((data) => {
                 // Handle login response
@@ -46,21 +48,31 @@ function Login() {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input type="email" value={email} onChange={handleEmailChange} />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={handlePasswordChange} />
-                </div>
-                <button type="submit">Login</button>
-                {error && <p>{error}</p>}
-            </form>
-        </div>
+        <Container>
+            <Row className="justify-content-center mt-5">
+                <Col xs={12} md={6}>
+                    <h2>Login</h2>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="3">Email:</Form.Label>
+                            <Col sm="9">
+                                <Form.Control type="email" value={email} onChange={handleEmailChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="3">Password:</Form.Label>
+                            <Col sm="9">
+                                <Form.Control type="password" value={password} onChange={handlePasswordChange} />
+                            </Col>
+                        </Form.Group>
+                        <Button type="submit" style={{ backgroundColor: 'cornflowerblue', marginTop: '10px' }}>
+                            Login
+                        </Button>
+                    </Form>
+                    {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

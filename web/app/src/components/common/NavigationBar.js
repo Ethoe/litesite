@@ -1,54 +1,27 @@
-import React, { useState, createContext, useContext } from 'react';
+import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Dropdown } from 'react-bootstrap';
-
-const DropdownContext = createContext();
 
 const NavigationBar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-
     return (
-        <nav style={{ backgroundColor: 'black', color: 'white', padding: '10px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '800px', margin: '0 auto' }}>
-                <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
+        <nav style={{ backgroundColor: 'cornflowerblue', color: 'aliceblue', padding: '10px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '800px', margin: '0 auto', alignItems: 'center' }}>
+                <Link to="/" style={{ color: 'aliceblue', textDecoration: 'none', fontSize: '30px' }}>
                     Ethoe's Blog
                 </Link>
-                <ul style={{ display: 'flex', listStyle: 'none', gap: '10px', justifyContent: 'center' }}>
+                <ul style={{ display: 'flex', listStyle: 'none', gap: '10px', marginTop: 'revert', fontSize: '20px' }}>
                     <li>
-                        <NavLink exact to="/" activeStyle={{ fontWeight: 'bold' }}>
+                        <NavLink exact to="/" style={{ color: 'aliceblue', textDecoration: 'none' }} activeStyle={{ fontWeight: 'bold' }}>
                             Home
                         </NavLink>
                     </li>
                     <li>
-                        <DropdownContext.Provider value={{ isOpen, setIsOpen }}>
-                            <DropdownComponent />
-                        </DropdownContext.Provider>
+                        <NavLink exact to="/login" style={{ color: 'aliceblue', textDecoration: 'none' }} activeStyle={{ fontWeight: 'bold' }}>
+                            Login
+                        </NavLink>
                     </li>
                 </ul>
             </div>
         </nav>
-    );
-};
-
-const DropdownComponent = () => {
-    const { isOpen, setIsOpen } = useContext(DropdownContext);
-
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
-
-    return (
-        <Dropdown>
-            <Dropdown.Toggle variant="link" id="account-dropdown" onClick={toggleDropdown} style={{ padding: 0, margin: 0 }}>
-                Account
-            </Dropdown.Toggle>
-            <Dropdown.Menu show={isOpen} onClick={toggleDropdown}>
-                <Dropdown.Item as={Link} to="/login">
-                    Login
-                </Dropdown.Item>
-                {/* Add more dropdown items here as needed */}
-            </Dropdown.Menu>
-        </Dropdown>
     );
 };
 
