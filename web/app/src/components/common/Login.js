@@ -3,7 +3,7 @@ import apiClient from './../../services/apiClient';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
-function Login() {
+function Login({ setUser }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -17,7 +17,7 @@ function Login() {
         if (isLoggedIn) {
             navigate.push('/'); // Replace with your desired URL
         }
-    }, []);
+    }, [navigate]);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -39,6 +39,7 @@ function Login() {
                 if (data.success) {
                     // Redirect to dashboard or home page on successful login
                     // You can use React Router to handle the navigation
+                    setUser(data.user)
                     navigate.pushState = '/'; // Replace with your desired URL
                 } else {
                     setError('Invalid email or password');

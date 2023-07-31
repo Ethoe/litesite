@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-const NavigationBar = () => {
+const NavigationBar = ({ user }) => {
     return (
         <nav style={{ backgroundColor: 'cornflowerblue', color: 'aliceblue', padding: '10px', marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '800px', margin: '0 auto', alignItems: 'center' }}>
@@ -14,11 +14,20 @@ const NavigationBar = () => {
                             Home
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink exact to="/login" style={{ color: 'aliceblue', textDecoration: 'none' }} activeStyle={{ fontWeight: 'bold' }}>
-                            Login
-                        </NavLink>
-                    </li>
+                    {!user ? (
+                        <li>
+                            <NavLink exact to="/login" style={{ color: 'aliceblue', textDecoration: 'none' }} activeStyle={{ fontWeight: 'bold' }}>
+                                Login
+                            </NavLink>
+                        </li>
+
+                    ) : (
+                        <li>
+                            <span style={{ color: 'aliceblue', textDecoration: 'none' }}>
+                                user.firstName
+                            </span>
+                        </li>
+                    )}
                 </ul>
             </div>
         </nav>

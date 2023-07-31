@@ -34,7 +34,6 @@ func main() {
 	apiRouter.HandleFunc("/users/list/all", core.GetAllUsersHandler).Methods("GET")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("trying to serve")
 		http.ServeFile(w, r, "./web/app/build/index.html")
 	})
 
@@ -42,6 +41,6 @@ func main() {
 
 	fmt.Println("Listening on port 5050...")
 
-	//http.Handle("/", r)
+	http.Handle("/", r)
 	http.ListenAndServe(":5050", r)
 }
