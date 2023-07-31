@@ -31,6 +31,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session",
 		Value:    token,
+		Path:     "/",
 		Expires:  time.Now().Add(365 * 24 * time.Hour), // Set the expiration time for the session cookie
 		HttpOnly: true,
 	})
