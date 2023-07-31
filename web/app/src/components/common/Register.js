@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import apiClient from './../../services/apiClient';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
-function Login() {
+function Register() {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // Check if the user is already logged in on page load
-    useEffect(() => {
-        // Check the `session` cookie or use any other method to determine if the user is logged in
-        // If the user is logged in, redirect to the dashboard or home page
-        const isLoggedIn = document.cookie.includes('session=');
-        if (isLoggedIn) {
-            navigate.push('/'); // Replace with your desired URL
-        }
-    }, []);
+    const handleFirstNameChange = (event) => {
+        setFirstName(event.target.value);
+    };
+
+    const handleLastNameChange = (event) => {
+        setLastName(event.target.value);
+    };
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -30,31 +29,32 @@ function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // Send login request to the backend
-        apiClient
-            .post('/login', { email, password })
-            .then((response) => response.json())
-            .then((data) => {
-                // Handle login response
-                if (data.success) {
-                    // Redirect to dashboard or home page on successful login
-                    // You can use React Router to handle the navigation
-                    navigate.pushState = '/'; // Replace with your desired URL
-                } else {
-                    setError('Invalid email or password');
-                }
-            })
-            .catch((error) => {
-                console.error('Error logging in:', error);
-            });
+        // Implement your registration logic here (similar to the login page)
+
+        // For demonstration purposes, let's just show a success message
+        setError('Registration successful!');
+
+        navigate.push('/login'); // Replace with your desired URL
     };
 
     return (
         <Container>
             <Row className="justify-content-center mt-5">
                 <Col xs={12} md={6}>
-                    <h2>Login</h2>
+                    <h2>Register</h2>
                     <Form onSubmit={handleSubmit}>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="3">First Name:</Form.Label>
+                            <Col sm="9">
+                                <Form.Control type="text" value={firstName} onChange={handleFirstNameChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="3">Last Name:</Form.Label>
+                            <Col sm="9">
+                                <Form.Control type="text" value={lastName} onChange={handleLastNameChange} />
+                            </Col>
+                        </Form.Group>
                         <Form.Group as={Row}>
                             <Form.Label column sm="3">Email:</Form.Label>
                             <Col sm="9">
@@ -68,12 +68,12 @@ function Login() {
                             </Col>
                         </Form.Group>
                         <Button type="submit" style={{ backgroundColor: 'cornflowerblue', marginTop: '10px' }}>
-                            Login
+                            Register
                         </Button>
                     </Form>
-                    {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+                    {error && <Alert variant="success" className="mt-3">{error}</Alert>}
                     <p className="mt-3">
-                        Don't have an account? <Link to="/register">Register</Link>
+                        Already have an account? <Link to="/login">Login</Link>
                     </p>
                 </Col>
             </Row>
@@ -81,4 +81,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;
