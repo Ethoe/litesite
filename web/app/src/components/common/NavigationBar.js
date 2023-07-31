@@ -24,7 +24,7 @@ const NavigationBar = ({ user }) => {
                     ) : (
                         <li>
                             <span style={{ color: 'aliceblue', textDecoration: 'none' }}>
-                                user.firstName
+                                {user.firstName}
                             </span>
                         </li>
                     )}

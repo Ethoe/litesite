@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"cmd/server/main.go/internal/db"
+	"cmd/server/main.go/pkg/api"
 	"cmd/server/main.go/pkg/entities/users"
 	"encoding/json"
 	"net/http"
@@ -21,7 +22,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := users.SignInUser(db.Master, login.Email, login.Password)
+	token, user, err := users.SignInUser(db.Master, login.Email, login.Password)
 	if err != nil {
 		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
 		return
@@ -35,5 +36,5 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"success": "true"})
+	api.BodyMarshal(w, api.Response{"success": true, "user": user}, http.StatusOK)
 }

@@ -59,7 +59,7 @@ func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, e
 		return "", fmt.Errorf("failed to insert new user: %v", err)
 	}
 
-	token, err := SignInUser(db, email, password)
+	token, _, err := SignInUser(db, email, password)
 	if err != nil {
 		return "", fmt.Errorf("failed to sign in user: %v", err)
 	}
@@ -67,7 +67,7 @@ func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, e
 	return token, nil
 }
 
-func SignInUser(db *sql.DB, email, password string) (string, error) {
+func SignInUser(db *sql.DB, email, password string) (string, User, error) {
 	var user User
 	query := "SELECT id, firstname, lastname, email, password, reg_date " +
 		"FROM users WHERE email = ? AND password = ?"
@@ -76,19 +76,19 @@ func SignInUser(db *sql.DB, email, password string) (string, error) {
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", fmt.Errorf("invalid email or password")
+			return "", User{}, fmt.Errorf("invalid email or password")
 		}
-		return "", err
+		return "", User{}, err
 	}
 
 	token := generateSessionToken()
 	query = "INSERT INTO usersessions (userid, sessiontoken, creation) VALUES (?, ?, NOW())"
 	_, err = db.Exec(query, user.ID, token)
 	if err != nil {
-		return "", err
+		return "", User{}, err
 	}
 
-	return token, nil
+	return token, user, nil
 }
 
 func generateSessionToken() string {

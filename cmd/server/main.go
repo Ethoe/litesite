@@ -30,8 +30,11 @@ func main() {
 
 	apiRouter := r.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/", MainHandler)
-	apiRouter.HandleFunc("/users/create", core.AddUserHandler).Methods("POST")
-	apiRouter.HandleFunc("/users/list/all", core.GetAllUsersHandler).Methods("GET")
+	apiRouter.HandleFunc("/user/register", core.AddUserHandler).Methods("POST")
+	apiRouter.HandleFunc("/user/login", core.LoginHandler).Methods("POST")
+	apiRouter.HandleFunc("/user/logout", core.LogoutHandler).Methods("GET")
+	apiRouter.HandleFunc("/user/self", core.SelfHandlers).Methods("GET")
+	apiRouter.HandleFunc("/user/list/all", core.GetAllUsersHandler).Methods("GET")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./web/app/build/index.html")

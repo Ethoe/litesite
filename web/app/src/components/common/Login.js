@@ -15,7 +15,7 @@ function Login({ setUser }) {
         // If the user is logged in, redirect to the dashboard or home page
         const isLoggedIn = document.cookie.includes('session=');
         if (isLoggedIn) {
-            navigate.push('/'); // Replace with your desired URL
+            navigate('/'); // Replace with your desired URL
         }
     }, [navigate]);
 
@@ -32,15 +32,16 @@ function Login({ setUser }) {
 
         // Send login request to the backend
         apiClient
-            .post('/login', { email, password })
-            .then((response) => response.json())
+            .post('/user/login', { email, password })
+            .then((response) => response.data)
             .then((data) => {
                 // Handle login response
                 if (data.success) {
                     // Redirect to dashboard or home page on successful login
                     // You can use React Router to handle the navigation
                     setUser(data.user)
-                    navigate.pushState = '/'; // Replace with your desired URL
+                    console.log(data)
+                    navigate('/'); // Replace with your desired URL
                 } else {
                     setError('Invalid email or password');
                 }
