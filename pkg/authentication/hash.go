@@ -1,11 +1,11 @@
 package authentication
 
 import (
-	"crypto/sha256"
+	"crypto/md5"
 	"encoding/hex"
 )
 
 func Hash(input string) string {
-	hash := sha256.Sum256([]byte(input))
+	hash := md5.Sum([]byte(input))
 	return hex.EncodeToString(hash[:])
 }

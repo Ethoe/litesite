@@ -16,7 +16,12 @@ func SelfUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user, ok := ctx.Value("user").(users.User)
 	if !ok {
-		api.BodyMarshal(w, api.Response{"success": true, "error": "Cookie not found"}, http.StatusUnauthorized)
+		api.BodyMarshal(w, api.Response{"success": false, "error": "Cookie not found"}, http.StatusUnauthorized)
+		return
+	}
+
+	if user.Email == "" {
+		api.BodyMarshal(w, api.Response{"success": false, "error": "User not found"}, http.StatusUnauthorized)
 		return
 	}
 

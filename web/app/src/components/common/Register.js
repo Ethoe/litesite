@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import apiClient from './../../services/apiClient';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
-function Register() {
+function Register({ setUser }) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -31,10 +32,25 @@ function Register() {
 
         // Implement your registration logic here (similar to the login page)
 
-        // For demonstration purposes, let's just show a success message
-        setError('Registration successful!');
-
-        navigate('/login'); // Replace with your desired URL
+        // Send login request to the backend
+        apiClient
+            .post('/user/register', { firstName, lastName, email, password })
+            .then((response) => response.data)
+            .then((data) => {
+                // Handle login response
+                if (data.success) {
+                    // Redirect to dashboard or home page on successful login
+                    // You can use React Router to handle the navigation
+                    setUser(data.user)
+                    setError('Registration successful!');
+                    navigate('/'); // Replace with your desired URL
+                } else {
+                    setError('Invalid email or password');
+                }
+            })
+            .catch((error) => {
+                console.error('Error registering:', error);
+            });
     };
 
     return (
