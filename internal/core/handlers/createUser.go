@@ -12,10 +12,9 @@ import (
 )
 
 type UserRegister struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func AddUser(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +25,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := users.AddUser(db.Master, user.FirstName, user.LastName, user.Email, user.Password)
+	token, err := users.AddUser(db.Master, user.Username, user.Email, user.Password)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed save user to db: %v", err), http.StatusBadRequest)
 		return

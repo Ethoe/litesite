@@ -7,9 +7,8 @@ import (
 )
 
 type SelfUserResponse struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 func SelfUser(w http.ResponseWriter, r *http.Request) {
@@ -26,9 +25,8 @@ func SelfUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := SelfUserResponse{
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
+		Username: user.Username,
+		Email:    user.Email,
 	}
 
 	api.BodyMarshal(w, api.Response{"success": true, "user": res}, http.StatusOK)

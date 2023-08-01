@@ -4,19 +4,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
 function Register({ setUser }) {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value);
-    };
-
-    const handleLastNameChange = (event) => {
-        setLastName(event.target.value);
+    const handleUsernameChange = (event) => {
+        setUsername(event.target.value);
     };
 
     const handleEmailChange = (event) => {
@@ -34,7 +29,7 @@ function Register({ setUser }) {
 
         // Send login request to the backend
         apiClient
-            .post('/user/register', { firstName, lastName, email, password })
+            .post('/user/register', { username, email, password })
             .then((response) => response.data)
             .then((data) => {
                 // Handle login response
@@ -60,15 +55,9 @@ function Register({ setUser }) {
                     <h2>Register</h2>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group as={Row}>
-                            <Form.Label column sm="3">First Name:</Form.Label>
+                            <Form.Label column sm="3">Username:</Form.Label>
                             <Col sm="9">
-                                <Form.Control type="text" value={firstName} onChange={handleFirstNameChange} />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="3">Last Name:</Form.Label>
-                            <Col sm="9">
-                                <Form.Control type="text" value={lastName} onChange={handleLastNameChange} />
+                                <Form.Control type="text" value={username} onChange={handleUsernameChange} />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row}>
