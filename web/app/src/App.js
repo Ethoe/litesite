@@ -30,7 +30,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <header>
-          <NavigationBar user={user} />
+          <NavigationBar user={user} setUser={setUser} />
         </header>
         <main>
           <Routes>

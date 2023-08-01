@@ -92,6 +92,16 @@ func SignInUser(db *sql.DB, email, password string) (string, User, error) {
 	return token, user, nil
 }
 
+func DeleteUserSession(db *sql.DB, id int) error {
+	query := "DELETE FROM usersessions WHERE userid = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func generateSessionToken() string {
 	// Generate a random session token using crypto/rand and base64 encoding
 	tokenBytes := make([]byte, 32)
