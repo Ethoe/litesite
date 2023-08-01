@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 
+	"cmd/server/main.go/pkg/authentication"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -46,6 +48,8 @@ func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, e
 		return "", fmt.Errorf("invalid email address")
 	}
 
+	hashedPassword := authentication.Hash(password)
+
 	// Prepare the SQL statement
 	stmt, err := db.Prepare("INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)")
 	if err != nil {
@@ -54,7 +58,7 @@ func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, e
 	defer stmt.Close()
 
 	// Execute the statement to insert the new user
-	_, err = stmt.Exec(firstname, lastname, email, password)
+	_, err = stmt.Exec(firstname, lastname, email, hashedPassword)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert new user: %v", err)
 	}
@@ -68,10 +72,12 @@ func AddUser(db *sql.DB, firstname, lastname, email, password string) (string, e
 }
 
 func SignInUser(db *sql.DB, email, password string) (string, error) {
+	hashedPassword := authentication.Hash(password)
+
 	var user User
 	query := "SELECT id, firstname, lastname, email, password, reg_date " +
 		"FROM users WHERE email = ? AND password = ?"
-	err := db.QueryRow(query, email, password).Scan(
+	err := db.QueryRow(query, email, hashedPassword).Scan(
 		&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.RegDate,
 	)
 	if err != nil {
