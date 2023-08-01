@@ -34,7 +34,7 @@ function Register() {
         // For demonstration purposes, let's just show a success message
         setError('Registration successful!');
 
-        navigate.push('/login'); // Replace with your desired URL
+        navigate('/login'); // Replace with your desired URL
     };
 
     return (
