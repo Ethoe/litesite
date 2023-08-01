@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+type SelfUserResponse struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+}
+
 func SelfUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user, ok := ctx.Value("user").(users.User)
@@ -14,6 +20,12 @@ func SelfUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.BodyMarshal(w, api.Response{"success": true, "user": user}, http.StatusOK)
+	res := SelfUserResponse{
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+	}
+
+	api.BodyMarshal(w, api.Response{"success": true, "user": res}, http.StatusOK)
 
 }
