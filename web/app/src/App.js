@@ -6,6 +6,7 @@ import Login from './components/common/Login';
 import Register from './components/common/Register';
 import NavigationBar from './components/common/NavigationBar';
 import apiClient from './services/apiClient';
+import AccountPage from './components/pages/Account';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,6 +38,7 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register setUser={setUser} />} />
+            <Route path="/account" element={<AccountPage user={user} />} />
           </Routes>
         </main>
       </BrowserRouter>

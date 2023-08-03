@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://ethoe.dev/api'; // Replace with the URL of your Golang backend API
-//const baseURL = 'http://localhost:5050/api'
+//const baseURL = 'https://ethoe.dev/api'; // Replace with the URL of your Golang backend API
+const baseURL = 'http://localhost:5050/api'
 
 const apiClient = axios.create({
     baseURL,
@@ -23,6 +23,20 @@ export const get = async (url) => {
 export const post = async (url, data) => {
     try {
         const response = await apiClient.post(url, data);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating data:', error);
+        throw error;
+    }
+};
+
+export const postFormData = async (url, formData) => {
+    try {
+        const response = await apiClient.post(url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating data:', error);

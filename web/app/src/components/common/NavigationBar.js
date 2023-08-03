@@ -51,9 +51,9 @@ const NavigationBar = ({ user, setUser }) => {
                     ) : (
                         <>
                             <li>
-                                <span style={{ color: 'aliceblue', textDecoration: 'none' }}>
+                                <NavLink exact to="/account" style={{ color: 'aliceblue', textDecoration: 'none' }}>
                                     {user.username}
-                                </span>
+                                </NavLink>
                             </li>
                             <li>
                                 <button style={{ color: 'aliceblue', background: 'none', border: 'none', cursor: 'pointer', margin: '0', padding: '0' }} onClick={onLogout}>
