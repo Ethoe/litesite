@@ -1,6 +1,6 @@
-package core
+package users_api
 
-import "cmd/server/main.go/internal/core/handlers"
+import "cmd/server/main.go/internal/core/users_api/handlers"
 
 var AddUserHandler = handlers.AddUser
 var GetAllUsersHandler = handlers.GetAllUsers

@@ -13,6 +13,6 @@ func BodyMarshal(w http.ResponseWriter, x map[string]interface{}, status int) {
 		w.Write([]byte(`{"success":false,"message":"Some internal error occurred"}`))
 	}
 
-	w.Write(resp)
 	w.WriteHeader(status)
+	w.Write(resp)
 }

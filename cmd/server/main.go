@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"cmd/server/main.go/internal/core"
+	"cmd/server/main.go/internal/core/files_api"
+	"cmd/server/main.go/internal/core/users_api"
 	"cmd/server/main.go/internal/db"
 	"cmd/server/main.go/pkg/middleware"
 
@@ -30,11 +31,13 @@ func main() {
 
 	apiRouter := r.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/", MainHandler)
-	apiRouter.HandleFunc("/user/register", core.AddUserHandler).Methods("POST")
-	apiRouter.HandleFunc("/user/login", core.LoginHandler).Methods("POST")
-	apiRouter.HandleFunc("/user/logout", core.LogoutHandler).Methods("GET")
-	apiRouter.HandleFunc("/user/self", core.SelfHandlers).Methods("GET")
-	apiRouter.HandleFunc("/user/list/all", core.GetAllUsersHandler).Methods("GET")
+	apiRouter.HandleFunc("/user/register", users_api.AddUserHandler).Methods("POST")
+	apiRouter.HandleFunc("/user/login", users_api.LoginHandler).Methods("POST")
+	apiRouter.HandleFunc("/user/logout", users_api.LogoutHandler).Methods("GET")
+	apiRouter.HandleFunc("/user/self", users_api.SelfHandlers).Methods("GET")
+	apiRouter.HandleFunc("/user/list/all", users_api.GetAllUsersHandler).Methods("GET")
+
+	apiRouter.HandleFunc("/file", files_api.UploadFileHandler).Methods("POST")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./web/app/build/index.html")
