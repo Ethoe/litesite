@@ -50,3 +50,25 @@ func CreateFile(db *sql.DB, file multipart.File, fileHeader *multipart.FileHeade
 
 	return url, nil
 }
+
+func DeleteFile(db *sql.DB, fileId int, user users.User) error {
+	// Check if the file exists in the database and belongs to the user
+	var filePath string
+	err := db.QueryRow("SELECT file_path FROM files WHERE id = ? AND user_id = ?", fileId, user.ID).Scan(&filePath)
+	if err != nil {
+		return err
+	}
+
+	// Delete the file from disk
+	if err := os.Remove(filePath); err != nil {
+		return err
+	}
+
+	// Delete the file metadata from the database
+	_, err = db.Exec("DELETE FROM files WHERE id = ?", fileId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

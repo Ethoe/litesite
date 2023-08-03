@@ -38,6 +38,7 @@ func main() {
 	apiRouter.HandleFunc("/user/list/all", users_api.GetAllUsersHandler).Methods("GET")
 
 	apiRouter.HandleFunc("/file", files_api.UploadFileHandler).Methods("POST")
+	apiRouter.HandleFunc("/file/{id}", files_api.DeleteFileHandler).Methods("DELETE")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./web/app/build/index.html")
