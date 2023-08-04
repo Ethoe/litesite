@@ -16,6 +16,8 @@ services:
     volumes:
       - ./.docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - site-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
     env_file:
       - .env
     environment:
