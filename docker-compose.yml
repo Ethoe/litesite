@@ -30,3 +30,8 @@ services:
       - sqldb
 volumes:
   site-mysql-data:
+    driver: ${VOLUME_DRIVER}
+    driver_opts:
+      type: ${VOLUME_TYPE}
+      device: ${VOLUME_DEVICE}
+      o: ${VOLUME_BIND_OPTS}
