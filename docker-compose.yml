@@ -25,7 +25,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DB}
   flyway:
     platform: ${PLATFORM}
-    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?allowPublicKeyRetrieval=true migrate
+    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?allowPublicKeyRetrieval=true -user=${MYSQL_USER} -password=${MYSQL_PASSWORD} migrate
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
