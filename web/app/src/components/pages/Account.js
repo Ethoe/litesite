@@ -88,7 +88,7 @@ const AccountPage = ({ user }) => {
             {/* List of uploaded files */}
             <div>
                 {fileList.map((file) => (
-                    <p key={file.id}>{file.filename}</p>
+                    <p key={file.id}>Name: {file.filename} URL: {file.url}</p>
                 ))}
             </div>
 
