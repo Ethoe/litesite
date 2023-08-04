@@ -1,40 +1,61 @@
-import React, { useState } from 'react';
-import { postFormData } from './../../services/apiClient';
-
+import React, { useState, useEffect } from 'react';
+import { get, postFormData } from './../../services/apiClient';
 
 const AccountPage = ({ user }) => {
-    const [files, setFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [fileList, setFileList] = useState([]);
+    const [page, setPage] = useState(0);
+    const limit = 10; // Set the number of files per page
 
     // Function to handle file drop event
     const handleFileDrop = (event) => {
         event.preventDefault();
         const incomingFile = event.dataTransfer.files[0];
         if (incomingFile) {
-            setFiles([incomingFile]);
+            setUploadedFiles([incomingFile]);
         }
     };
 
     // Function to handle file upload
     const handleFileUpload = async () => {
         try {
-            if (files.length === 0) {
+            if (uploadedFiles.length === 0) {
                 console.error('No file selected for upload.');
                 return;
             }
 
             const formData = new FormData();
-            formData.append('file', files[0]);
+            formData.append('file', uploadedFiles[0]);
 
             // Make a post request using postFormData function
             const result = await postFormData('/file', formData);
             console.log('File upload response:', result);
 
             // Clear dropped files after successful upload
-            setFiles([]);
+            setUploadedFiles([]);
+            // Fetch the updated list of files after upload
+            fetchFiles();
         } catch (error) {
             console.error('Error uploading files:', error);
         }
     };
+
+    // Function to fetch the list of files from the backend
+    const fetchFiles = async () => {
+        try {
+            const response = await get(`/file/list/all?limit=${limit}&page=${page}`);
+            if (response.success) {
+                setFileList(response.files);
+            }
+        } catch (error) {
+            console.error('Error fetching files:', error);
+        }
+    };
+
+    // Call the fetchFiles function when the component loads or when the page changes
+    useEffect(() => {
+        fetchFiles();
+    }, [page]);
 
     return (
         <div>
@@ -55,9 +76,27 @@ const AccountPage = ({ user }) => {
             >
                 <p>Drag and drop files here</p>
                 <button onClick={handleFileUpload}>Upload Files</button>
-                {files.map((file, index) => (
+                {uploadedFiles.map((file, index) => (
                     <p key={index}>{file.name}</p>
                 ))}
+            </div>
+
+            {/* List of uploaded files */}
+            <div>
+                {fileList.map((file) => (
+                    <p key={file.id}>{file.filename}</p>
+                ))}
+            </div>
+
+            {/* Pagination */}
+            <div>
+                <button
+                    onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 0))}
+                    disabled={page === 0}
+                >
+                    Previous Page
+                </button>
+                <button onClick={() => setPage((prevPage) => prevPage + 1)}>Next Page</button>
             </div>
         </div>
     );

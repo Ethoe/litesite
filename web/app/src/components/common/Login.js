@@ -13,7 +13,7 @@ function Login({ setUser }) {
     useEffect(() => {
         // Check the `session` cookie or use any other method to determine if the user is logged in
         // If the user is logged in, redirect to the dashboard or home page
-        const isLoggedIn = document.cookie.includes('session=');
+        const isLoggedIn = document.cookie.includes('ethoe_session=');
         if (isLoggedIn) {
             navigate('/'); // Replace with your desired URL
         }

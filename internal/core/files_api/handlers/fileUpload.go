@@ -5,23 +5,25 @@ import (
 	"cmd/server/main.go/pkg/api"
 	"cmd/server/main.go/pkg/entities/files"
 	"cmd/server/main.go/pkg/entities/users"
+	"cmd/server/main.go/pkg/middleware"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/context"
 )
 
 // TODO: Check total size user has taken up and cap that
 
 /*
 curl --location 'localhost:5050/api/file' \
---header 'Cookie: session=y9feCnkE8HjTA7DOIAk0WdtNMzvAc10UtBHnbAsJX7w=' \
+--header 'Cookie: ethoe_session=y9feCnkE8HjTA7DOIAk0WdtNMzvAc10UtBHnbAsJX7w=' \
 --form 'file=@"dAmeoGMGZ/trees.png"'
 */
 
 const maxUploadSize = 10 << 30 // 1 GB max file size
 
 func UploadFile(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user, ok := ctx.Value("user").(users.User)
+	user, ok := context.Get(r, middleware.UserContextKey).(users.User)
 	if !ok {
 		api.BodyMarshal(w, api.Response{"success": false, "error": "user not found"}, http.StatusUnauthorized)
 		return

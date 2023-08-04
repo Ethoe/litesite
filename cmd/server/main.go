@@ -30,6 +30,7 @@ func main() {
 	r.PathPrefix("/static/").Handler(fs)
 
 	apiRouter := r.PathPrefix("/api").Subrouter()
+	apiRouter.Use(middleware.AuthMiddleware)
 	apiRouter.HandleFunc("/", MainHandler)
 	apiRouter.HandleFunc("/user/register", users_api.AddUserHandler).Methods("POST")
 	apiRouter.HandleFunc("/user/login", users_api.LoginHandler).Methods("POST")
@@ -39,12 +40,11 @@ func main() {
 
 	apiRouter.HandleFunc("/file", files_api.UploadFileHandler).Methods("POST")
 	apiRouter.HandleFunc("/file/{id}", files_api.DeleteFileHandler).Methods("DELETE")
+	apiRouter.HandleFunc("/file/list/all", files_api.GetAllFilesHandler).Methods("GET")
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./web/app/build/index.html")
 	})
-
-	r.Use(middleware.AuthMiddleware)
 
 	fmt.Println("Listening on port 5050...")
 

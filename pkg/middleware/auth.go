@@ -3,15 +3,21 @@ package middleware
 import (
 	"cmd/server/main.go/internal/db"
 	"cmd/server/main.go/pkg/entities/users"
-	"context"
+
 	"database/sql"
 	"net/http"
+
+	"github.com/gorilla/context"
 )
+
+type ContextKey string
+
+const UserContextKey ContextKey = "user"
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check for the session token in the request cookie
-		sessionToken, err := r.Cookie("session")
+		sessionToken, err := r.Cookie("ethoe_session")
 		if err != nil || sessionToken.Value == "" {
 			next.ServeHTTP(w, r)
 			return
@@ -23,10 +29,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// If the session token is valid, add the user info to the request context
-		ctx := r.Context()
-		ctx = context.WithValue(ctx, "user", user)
-		r = r.WithContext(ctx)
+		context.Set(r, UserContextKey, user)
 
 		next.ServeHTTP(w, r)
 	})

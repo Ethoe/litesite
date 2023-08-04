@@ -4,13 +4,16 @@ import (
 	"cmd/server/main.go/internal/db"
 	"cmd/server/main.go/pkg/api"
 	"cmd/server/main.go/pkg/entities/users"
+	"cmd/server/main.go/pkg/middleware"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/context"
 )
 
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
-		Name:     "session",
+		Name:     "ethoe_session",
 		Value:    "",
 		Path:     "/",
 		Domain:   "ethoe.dev",
@@ -21,8 +24,7 @@ func LogoutUser(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 
-	ctx := r.Context()
-	user, ok := ctx.Value("user").(users.User)
+	user, ok := context.Get(r, middleware.UserContextKey).(users.User)
 	if !ok {
 		w.Header().Set("Content-Type", "application/json")
 		api.BodyMarshal(w, api.Response{"success": true}, http.StatusOK)

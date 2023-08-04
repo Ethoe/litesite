@@ -3,7 +3,10 @@ package handlers
 import (
 	"cmd/server/main.go/pkg/api"
 	"cmd/server/main.go/pkg/entities/users"
+	"cmd/server/main.go/pkg/middleware"
 	"net/http"
+
+	"github.com/gorilla/context"
 )
 
 type SelfUserResponse struct {
@@ -12,8 +15,7 @@ type SelfUserResponse struct {
 }
 
 func SelfUser(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user, ok := ctx.Value("user").(users.User)
+	user, ok := context.Get(r, middleware.UserContextKey).(users.User)
 	if !ok {
 		api.BodyMarshal(w, api.Response{"success": false, "error": "Cookie not found"}, http.StatusUnauthorized)
 		return
