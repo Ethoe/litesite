@@ -7,8 +7,6 @@ services:
     working_dir: /app
     volumes: 
       - ./:/app
-    networks:
-      - db_network
     env_file:
       - .env
     depends_on:
@@ -20,35 +18,15 @@ services:
       - site-mysql-data:/var/lib/mysql
     ports:
       - 3306:3306
-    networks:
-      - db_network
     env_file:
       - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DB}
   flyway:
     platform: ${PLATFORM}
-    command: >
-      -url=jdbc:mysql://mysql:3306/${MYSQL_DB}?allowPublicKeyRetrieval=true
-      -user=${MYSQL_USER}
-      -password=${MYSQL_PASSWORD}
-      migrate
-    networks:
-      - db_network
+    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?allowPublicKeyRetrieval=true migrate
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
     depends_on:
       - mysql
-networks:
-  db_network:
 volumes:
   site-mysql-data:
-    driver: ${VOLUME_DRIVER}
-    driver_opts:
-      type: ${VOLUME_TYPE}
-      device: ${VOLUME_DEVICE}
-      o: ${VOLUME_BIND_OPTS}
