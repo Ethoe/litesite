@@ -45,7 +45,11 @@ const AccountPage = ({ user }) => {
         try {
             const response = await get(`/file/list/all?limit=${limit}&page=${page}`);
             if (response.success) {
-                setFileList(response.files);
+                if (response.files.length === null) {
+                    setFileList([]);
+                } else {
+                    setFileList(response.files);
+                }
             }
         } catch (error) {
             console.error('Error fetching files:', error);
