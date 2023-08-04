@@ -10,8 +10,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - mysql
-  mysql:
+      - sqldb
+  sqldb:
     image: mysql:8.0
     volumes:
       - ./.docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
@@ -22,11 +22,11 @@ services:
       - .env
   flyway:
     platform: ${PLATFORM}
-    command: -url=jdbc:mysql://mysql/${MYSQL_DB}?allowPublicKeyRetrieval=true migrate
+    command: -url=jdbc:mysql://sqldb/${MYSQL_DB}?allowPublicKeyRetrieval=true migrate
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
     depends_on:
-      - mysql
+      - sqldb
 volumes:
   site-mysql-data:
